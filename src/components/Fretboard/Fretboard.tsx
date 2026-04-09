@@ -58,7 +58,16 @@ function noteRole(
   let label: string;
 
   if (isSelected) {
-    role  = rootPc === note.pitchClass ? 'root selected' : 'selected';
+    // Determine fill role from chord/key membership; selection itself is shown via outline
+    if (isChordRoot) {
+      role = 'root';
+    } else if (inChord) {
+      role = 'chord-tone';
+    } else if (inKey) {
+      role = scaleDegree === 1 ? 'root' : 'scale-degree';
+    } else {
+      role = 'selected';
+    }
     label = note.noteName;
   } else if (isChordRoot) {
     role  = 'root';
@@ -75,7 +84,6 @@ function noteRole(
   // Build color slices — every active membership gets a slice
   const colors: string[] = [];
 
-  if (isSelected)   colors.push('var(--color-selected)');
   if (inChord)      colors.push('var(--color-chord-tone)'); // blue for all chord members
   if (isChordRoot)  colors.push('var(--color-root)');       // orange extra slice for root
   if (inKey) {
@@ -148,7 +156,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
                     {fret > 0 && <div className="string-line" />}
                     {role !== 'none' ? (
                       <div
-                        className={`note-dot ${role}`}
+                        className={`note-dot ${role}${isSelected ? ' user-selected' : ''}`}
                         style={colors.length > 1 ? {
                           background: conicGradient(colors),
                           color: 'var(--color-bg)',

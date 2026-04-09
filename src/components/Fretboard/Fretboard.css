@@ -120,16 +120,20 @@
 }
 
 .note-dot.selected {
-  background: var(--color-selected);
-  color: var(--color-bg);
-  box-shadow: 0 0 6px var(--color-selected);
+  background: white;
+  color: #111;
 }
 
-.note-dot.root.selected,
 .note-dot.root {
   background: var(--color-root);
   color: var(--color-bg);
   box-shadow: 0 0 8px var(--color-root);
+}
+
+/* White ring outline for user-selected frets */
+.note-dot.user-selected {
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 .note-dot.chord-tone {
