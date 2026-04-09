@@ -1,5 +1,5 @@
-import React from 'react';
-import type { TuningConfig, StringCount, PitchClass } from '../../types';
+import React, { useState } from 'react';
+import type { TuningConfig, StringCount, PitchClass, InstrumentType } from '../../types';
 import { getPresetsForStringCount } from '../../data/tunings';
 import { SHARP_NAMES } from '../../lib/music/notes';
 
@@ -12,6 +12,9 @@ interface TuningControlProps {
   onFretCountChange: (n: number) => void;
 }
 
+const GUITAR_STRING_COUNTS: StringCount[] = [6, 7, 8];
+const BASS_STRING_COUNTS: StringCount[] = [4, 5, 6];
+
 export const TuningControl: React.FC<TuningControlProps> = ({
   stringCount,
   tuning,
@@ -20,7 +23,19 @@ export const TuningControl: React.FC<TuningControlProps> = ({
   onTuningChange,
   onFretCountChange,
 }) => {
-  const presets = getPresetsForStringCount(stringCount);
+  const [instrument, setInstrument] = useState<InstrumentType>('guitar');
+
+  const presets = getPresetsForStringCount(stringCount, instrument);
+
+  function handleInstrumentChange(inst: InstrumentType) {
+    setInstrument(inst);
+    const defaultCount: StringCount = inst === 'bass' ? 4 : 6;
+    onStringCountChange(defaultCount);
+  }
+
+  function handleStringCountChange(n: StringCount) {
+    onStringCountChange(n);
+  }
 
   function handlePresetChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const preset = presets.find((p) => p.name === e.target.value);
@@ -42,6 +57,7 @@ export const TuningControl: React.FC<TuningControlProps> = ({
     onTuningChange(newTuning);
   }
 
+  const stringCounts = instrument === 'bass' ? BASS_STRING_COUNTS : GUITAR_STRING_COUNTS;
   // Display strings high→low for the control as well
   const displayStrings = [...tuning.strings].reverse();
 
@@ -50,13 +66,28 @@ export const TuningControl: React.FC<TuningControlProps> = ({
       <h3>Tuning</h3>
 
       <div className="control-row">
+        <label>Instrument</label>
+        <div className="button-group">
+          {(['guitar', 'bass'] as InstrumentType[]).map((inst) => (
+            <button
+              key={inst}
+              className={instrument === inst ? 'active' : ''}
+              onClick={() => handleInstrumentChange(inst)}
+            >
+              {inst.charAt(0).toUpperCase() + inst.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="control-row">
         <label>Strings</label>
         <div className="button-group">
-          {([6, 7, 8] as StringCount[]).map((n) => (
+          {stringCounts.map((n) => (
             <button
               key={n}
               className={stringCount === n ? 'active' : ''}
-              onClick={() => onStringCountChange(n)}
+              onClick={() => handleStringCountChange(n)}
             >
               {n}
             </button>

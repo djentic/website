@@ -8,8 +8,9 @@ import type {
   PitchClass,
   ChordInterpretation,
   ScalePosition,
+  InstrumentType,
 } from '../types';
-import { STANDARD_6, STANDARD_7, STANDARD_8 } from '../data/tunings';
+import { STANDARD_6, STANDARD_7, STANDARD_8, BASS_4_STANDARD, BASS_5_STANDARD, BASS_6_STANDARD } from '../data/tunings';
 import { detectChords } from '../lib/music/chords';
 import { generateFretboard, pitchClassesAtPositions, computePositions } from '../lib/music/fretboard';
 import { buildKey } from '../lib/music/scales';
@@ -18,10 +19,13 @@ import type { ProgressionSuggestion, ScaleFormula } from '../types';
 
 export type AppMode = 'select' | 'chord' | 'key';
 
-function defaultTuning(count: StringCount): TuningConfig {
+function defaultTuning(count: StringCount, instrument: InstrumentType = 'guitar'): TuningConfig {
+  if (count === 4) return BASS_4_STANDARD;
+  if (count === 5) return BASS_5_STANDARD;
   if (count === 7) return STANDARD_7;
   if (count === 8) return STANDARD_8;
-  return STANDARD_6;
+  // count === 6
+  return instrument === 'bass' ? BASS_6_STANDARD : STANDARD_6;
 }
 
 export interface AppState {

@@ -1,4 +1,4 @@
-import type { TuningConfig } from '../types';
+import type { TuningConfig, StringCount, InstrumentType } from '../types';
 
 // Pitch class helpers (inline to avoid circular deps)
 // E=4, A=9, D=2, G=7, B=11, e=4
@@ -101,8 +101,73 @@ export const PRESET_TUNINGS_6: TuningConfig[] = [
 export const PRESET_TUNINGS_7: TuningConfig[] = [STANDARD_7];
 export const PRESET_TUNINGS_8: TuningConfig[] = [STANDARD_8];
 
-export function getPresetsForStringCount(n: 6 | 7 | 8): TuningConfig[] {
+// ===== Bass tunings =====
+// Bass strings are ~one octave lower than guitar; octave numbers reflect scientific pitch
+
+export const BASS_4_STANDARD: TuningConfig = {
+  name: 'Bass 4-String (EADG)',
+  strings: [
+    { stringIndex: 0, pitchClass: 4, octave: 1, displayName: 'E1' },
+    { stringIndex: 1, pitchClass: 9, octave: 1, displayName: 'A1' },
+    { stringIndex: 2, pitchClass: 2, octave: 2, displayName: 'D2' },
+    { stringIndex: 3, pitchClass: 7, octave: 2, displayName: 'G2' },
+  ],
+};
+
+export const BASS_4_DROP_D: TuningConfig = {
+  name: 'Bass 4-String Drop D (DADG)',
+  strings: [
+    { stringIndex: 0, pitchClass: 2, octave: 1, displayName: 'D1' },
+    { stringIndex: 1, pitchClass: 9, octave: 1, displayName: 'A1' },
+    { stringIndex: 2, pitchClass: 2, octave: 2, displayName: 'D2' },
+    { stringIndex: 3, pitchClass: 7, octave: 2, displayName: 'G2' },
+  ],
+};
+
+export const BASS_5_STANDARD: TuningConfig = {
+  name: 'Bass 5-String (BEADG)',
+  strings: [
+    { stringIndex: 0, pitchClass: 11, octave: 0, displayName: 'B0' },
+    { stringIndex: 1, pitchClass: 4,  octave: 1, displayName: 'E1' },
+    { stringIndex: 2, pitchClass: 9,  octave: 1, displayName: 'A1' },
+    { stringIndex: 3, pitchClass: 2,  octave: 2, displayName: 'D2' },
+    { stringIndex: 4, pitchClass: 7,  octave: 2, displayName: 'G2' },
+  ],
+};
+
+// Drop A: lowest string tuned down 2 semitones from B to A (same interval drop as guitar drop D)
+export const BASS_5_DROP_A: TuningConfig = {
+  name: 'Bass 5-String Drop A (AEADG)',
+  strings: [
+    { stringIndex: 0, pitchClass: 9,  octave: 0, displayName: 'A0' },
+    { stringIndex: 1, pitchClass: 4,  octave: 1, displayName: 'E1' },
+    { stringIndex: 2, pitchClass: 9,  octave: 1, displayName: 'A1' },
+    { stringIndex: 3, pitchClass: 2,  octave: 2, displayName: 'D2' },
+    { stringIndex: 4, pitchClass: 7,  octave: 2, displayName: 'G2' },
+  ],
+};
+
+export const BASS_6_STANDARD: TuningConfig = {
+  name: 'Bass 6-String (BEADGC)',
+  strings: [
+    { stringIndex: 0, pitchClass: 11, octave: 0, displayName: 'B0' },
+    { stringIndex: 1, pitchClass: 4,  octave: 1, displayName: 'E1' },
+    { stringIndex: 2, pitchClass: 9,  octave: 1, displayName: 'A1' },
+    { stringIndex: 3, pitchClass: 2,  octave: 2, displayName: 'D2' },
+    { stringIndex: 4, pitchClass: 7,  octave: 2, displayName: 'G2' },
+    { stringIndex: 5, pitchClass: 0,  octave: 3, displayName: 'C3' },
+  ],
+};
+
+export const PRESET_TUNINGS_BASS_4: TuningConfig[] = [BASS_4_STANDARD, BASS_4_DROP_D];
+export const PRESET_TUNINGS_BASS_5: TuningConfig[] = [BASS_5_STANDARD, BASS_5_DROP_A];
+export const PRESET_TUNINGS_BASS_6: TuningConfig[] = [BASS_6_STANDARD];
+
+export function getPresetsForStringCount(n: StringCount, instrument: InstrumentType = 'guitar'): TuningConfig[] {
+  if (n === 4) return PRESET_TUNINGS_BASS_4;
+  if (n === 5) return PRESET_TUNINGS_BASS_5;
   if (n === 7) return PRESET_TUNINGS_7;
   if (n === 8) return PRESET_TUNINGS_8;
-  return PRESET_TUNINGS_6;
+  // n === 6
+  return instrument === 'bass' ? PRESET_TUNINGS_BASS_6 : PRESET_TUNINGS_6;
 }

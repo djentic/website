@@ -33,7 +33,8 @@ export interface FretNote {
   octave: number;
 }
 
-export type StringCount = 6 | 7 | 8;
+export type StringCount = 4 | 5 | 6 | 7 | 8;
+export type InstrumentType = 'guitar' | 'bass';
 
 // Intervals (semitones from root)
 export type IntervalSemitones = number;
