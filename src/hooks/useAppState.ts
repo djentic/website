@@ -9,12 +9,15 @@ import type {
   ChordInterpretation,
   ScalePosition,
   InstrumentType,
+  Voicing,
+  ChordFormula,
 } from '../types';
 import { STANDARD_6, STANDARD_7, STANDARD_8, BASS_4_STANDARD, BASS_5_STANDARD, BASS_6_STANDARD } from '../data/tunings';
 import { detectChords } from '../lib/music/chords';
 import { generateFretboard, pitchClassesAtPositions, computePositions } from '../lib/music/fretboard';
 import { buildKey } from '../lib/music/scales';
 import { suggestProgressions } from '../lib/music/harmony';
+import { generateVoicings } from '../lib/music/voicings';
 import type { ProgressionSuggestion, ScaleFormula } from '../types';
 
 export type AppMode = 'select' | 'chord' | 'key';
@@ -41,6 +44,9 @@ export interface AppState {
   scalePositions: ScalePosition[];
   progressionSuggestions: ProgressionSuggestion[];
   topChord: ChordInterpretation | null;
+  voicings: Voicing[];
+  activeVoicing: Voicing | null;
+  activeChordRootPc: PitchClass | null;
 }
 
 export interface AppActions {
@@ -54,6 +60,8 @@ export interface AppActions {
   setActiveKey: (key: KeyInfo | null) => void;
   setKey: (rootPc: PitchClass, formula: ScaleFormula) => void;
   setActiveScalePosition: (pos: ScalePosition | null) => void;
+  setActiveChord: (pcs: PitchClass[] | null, rootPc: PitchClass | null, formula: ChordFormula | null) => void;
+  setActiveVoicing: (v: Voicing | null) => void;
 }
 
 export function useAppState(): AppState & AppActions {
@@ -65,6 +73,9 @@ export function useAppState(): AppState & AppActions {
   const [activeVoicingPcs, setActiveVoicingPcs] = useState<PitchClass[] | null>(null);
   const [activeKey, setActiveKey] = useState<KeyInfo | null>(null);
   const [activeScalePosition, setActiveScalePosition] = useState<ScalePosition | null>(null);
+  const [activeChordRootPc, setActiveChordRootPc] = useState<PitchClass | null>(null);
+  const [activeChordFormula, setActiveChordFormula] = useState<ChordFormula | null>(null);
+  const [activeVoicing, setActiveVoicing] = useState<Voicing | null>(null);
 
   // Derived state
   const grid = generateFretboard(tuning, fretCount);
@@ -106,6 +117,24 @@ export function useAppState(): AppState & AppActions {
     setActiveScalePosition(null); // reset position when key changes
   }, []);
 
+  const voicings = useMemo(() => {
+    if (!activeChordRootPc || !activeChordFormula) return [];
+    return generateVoicings(activeChordRootPc, activeChordFormula, tuning);
+  }, [activeChordRootPc, activeChordFormula, tuning]);
+
+  const setActiveChord = useCallback((
+    pcs: PitchClass[] | null,
+    rootPc: PitchClass | null,
+    formula: ChordFormula | null,
+  ) => {
+    setActiveVoicingPcs(pcs);
+    setActiveChordRootPc(rootPc);
+    setActiveChordFormula(formula);
+    // activeVoicing is reset to null here; the component re-renders and
+    // voicings useMemo produces the new list — VoicingPicker auto-selects [0]
+    setActiveVoicing(null);
+  }, []);
+
   return {
     stringCount,
     tuning,
@@ -119,6 +148,9 @@ export function useAppState(): AppState & AppActions {
     scalePositions,
     progressionSuggestions,
     topChord,
+    voicings,
+    activeVoicing,
+    activeChordRootPc,
     setStringCount,
     setTuning,
     setFretCount,
@@ -129,5 +161,7 @@ export function useAppState(): AppState & AppActions {
     setActiveKey,
     setKey,
     setActiveScalePosition,
+    setActiveChord,
+    setActiveVoicing,
   };
 }

@@ -76,12 +76,19 @@ export function generateVoicings(
 
   // Deduplicate by position signature
   const seen = new Set<string>();
-  return voicings.filter((v) => {
+  const unique = voicings.filter((v) => {
     const key = v.positions.map((p) => `${p.stringIndex}:${p.fret}`).join(',');
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
-  }).slice(0, 12);
+  });
+
+  // Sort: more strings played first (fuller voicing), then tighter fret span
+  unique.sort((a, b) =>
+    b.positions.length - a.positions.length || a.fretSpan - b.fretSpan
+  );
+
+  return unique.slice(0, 12);
 }
 
 function buildCandidates(
