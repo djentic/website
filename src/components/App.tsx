@@ -121,6 +121,9 @@ export const App: React.FC = () => {
           </div>
         </aside>
       </main>
+      <footer className="app-footer">
+        Feedback &amp; bugs: <a href="mailto:contact@adjentic.co.uk">contact@adjentic.co.uk</a>
+      </footer>
     </div>
   );
 };

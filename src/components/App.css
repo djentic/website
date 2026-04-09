@@ -554,6 +554,26 @@ button {
 .legend-dot.chord-tone  { background: var(--color-chord-tone); }
 .legend-dot.scale-degree { background: var(--color-scale-degree); }
 
+/* ===== Footer ===== */
+.app-footer {
+  flex-shrink: 0;
+  padding: 6px 20px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.app-footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  text-decoration: underline;
+}
+
 /* Error */
 .error-msg {
   font-size: 11px;
