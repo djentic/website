@@ -574,6 +574,44 @@ button {
   text-decoration: underline;
 }
 
+/* ===== Mobile layout ===== */
+@media (max-width: 768px) {
+  .app-header {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .legend {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .app-body {
+    flex-direction: column;
+  }
+
+  .fretboard-section {
+    flex: none;
+    height: 45vh;
+    padding: 10px 12px;
+    overflow: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .results-area {
+    overflow-y: visible;
+  }
+}
+
 /* Error */
 .error-msg {
   font-size: 11px;

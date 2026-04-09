@@ -36,14 +36,14 @@
   font-size: 10px;
   color: var(--color-text-muted);
   padding-bottom: 4px;
-  min-width: 0;
+  min-width: 32px;
 }
 
 /* Each fret cell */
 .fret-cell {
   position: relative;
   flex: 1;
-  min-width: 0;
+  min-width: 32px;
   height: 36px;
   display: flex;
   align-items: center;
@@ -150,7 +150,7 @@
 
 .fret-pos-marker {
   flex: 1;
-  min-width: 0;
+  min-width: 32px;
   display: flex;
   justify-content: center;
   gap: 4px;
