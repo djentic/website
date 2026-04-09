@@ -1,0 +1,166 @@
+/* Fretboard layout */
+
+.fretboard-wrapper {
+  padding: 8px 0 16px;
+  width: 100%;
+}
+
+.fretboard {
+  display: block;
+  width: 100%;
+  user-select: none;
+}
+
+.fret-header,
+.string-row,
+.fret-dot-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.string-label-spacer,
+.string-label {
+  width: 48px;
+  min-width: 48px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: right;
+  padding-right: 8px;
+}
+
+.fret-number {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  padding-bottom: 4px;
+  min-width: 0;
+}
+
+/* Each fret cell */
+.fret-cell {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.fret-cell:hover .note-dot.empty {
+  background: var(--color-hover);
+  opacity: 0.4;
+}
+
+/* The nut (fret 0) */
+.fret-cell.nut {
+  flex: 0 0 40px;
+  border-right: 4px solid var(--color-nut);
+}
+
+.fret-number:first-child,
+.fret-pos-marker:first-child {
+  flex: 0 0 40px;
+}
+
+/* Fret wire */
+.fret-cell:not(.nut)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-fret);
+  pointer-events: none;
+}
+
+/* String line running through the fret */
+.string-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: var(--color-string);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Note dot */
+.note-dot {
+  position: relative;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.note-dot.empty {
+  background: transparent;
+}
+
+.note-dot.none {
+  background: var(--color-note-default);
+  color: var(--color-text-dim);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.note-dot.selected {
+  background: var(--color-selected);
+  color: var(--color-bg);
+  box-shadow: 0 0 6px var(--color-selected);
+}
+
+.note-dot.root.selected,
+.note-dot.root {
+  background: var(--color-root);
+  color: var(--color-bg);
+  box-shadow: 0 0 8px var(--color-root);
+}
+
+.note-dot.chord-tone {
+  background: var(--color-chord-tone);
+  color: var(--color-bg);
+}
+
+.note-dot.scale-degree {
+  background: var(--color-scale-degree);
+  color: var(--color-text-on-scale);
+  font-size: 10px;
+}
+
+/* Fret position marker dots (bottom of neck) */
+.fret-dot-row {
+  padding-top: 6px;
+}
+
+.fret-pos-marker {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pos-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  opacity: 0.4;
+  display: inline-block;
+}
