@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Fretboard } from './Fretboard/Fretboard';
 import { TuningControl } from './Controls/TuningControl';
 import { ChordSearch } from './Controls/ChordSearch';
+import { VoicingPicker } from './Controls/VoicingPicker';
 import { KeySelector } from './Controls/KeySelector';
 import { PositionFilter } from './Controls/PositionFilter';
 import { ChordDisplay } from './Results/ChordDisplay';
@@ -25,13 +26,14 @@ export const App: React.FC = () => {
     ? (chordPitchClasses(state.topChord.root.pitchClass, state.topChord.formula.intervals) as PitchClass[])
     : null;
 
-  // Root PC for fretboard highlighting
+  // Root PC for fretboard highlighting — prefer the explicitly selected chord root
   const rootPc: PitchClass | null =
-    state.activeVoicingPcs !== null && state.topChord
+    state.activeChordRootPc ??
+    (state.activeVoicingPcs !== null && state.topChord
       ? state.topChord.root.pitchClass
       : state.activeVoicingPcs !== null
       ? state.activeVoicingPcs[0] ?? null
-      : state.topChord?.root.pitchClass ?? null;
+      : state.topChord?.root.pitchClass ?? null);
 
   return (
     <div className="app">
@@ -44,18 +46,32 @@ export const App: React.FC = () => {
       </header>
 
       <main className="app-body">
+        <div className="main-column">
         <section className="fretboard-section">
           <Fretboard
             tuning={state.tuning}
             fretCount={state.fretCount}
             selectedPositions={state.selectedPositions}
             activeVoicingPcs={state.activeVoicingPcs}
+            activeVoicing={state.activeVoicing}
             activeKey={state.activeKey}
             activeScalePosition={state.activeScalePosition}
             rootPc={rootPc}
             onToggle={state.togglePosition}
           />
         </section>
+
+        <div className="results-strip">
+          <ChordDisplay result={state.chordResult} />
+          {state.chordResult && state.chordResult.interpretations.length > 0 && topChordPcs && (
+            <KeyCompatibility chordPcs={topChordPcs} />
+          )}
+          <ProgressionSuggestions
+            suggestions={state.progressionSuggestions}
+            onChordClick={handleProgressionClick}
+          />
+        </div>
+        </div>{/* end .main-column */}
 
         <aside className="sidebar">
           <nav className="tab-nav">
@@ -85,12 +101,19 @@ export const App: React.FC = () => {
           )}
 
           {activeTab === 'chord' && (
-            <ChordSearch
-              activeKey={state.activeKey}
-              onChordSelect={(pcs, _root) => {
-                state.setActiveVoicingPcs(pcs);
-              }}
-            />
+            <>
+              <ChordSearch
+                activeKey={state.activeKey}
+                onChordSelect={(pcs, rootPc, formula) => {
+                  state.setActiveChord(pcs, rootPc, formula);
+                }}
+              />
+              <VoicingPicker
+                voicings={state.voicings}
+                activeVoicing={state.activeVoicing}
+                onSelect={state.setActiveVoicing}
+              />
+            </>
           )}
 
           {activeTab === 'key' && (
@@ -107,18 +130,6 @@ export const App: React.FC = () => {
             </>
           )}
 
-          <div className="results-area">
-            <ChordDisplay result={state.chordResult} />
-
-            {state.chordResult && state.chordResult.interpretations.length > 0 && topChordPcs && (
-              <KeyCompatibility chordPcs={topChordPcs} />
-            )}
-
-            <ProgressionSuggestions
-              suggestions={state.progressionSuggestions}
-              onChordClick={handleProgressionClick}
-            />
-          </div>
         </aside>
       </main>
       <footer className="app-footer">
