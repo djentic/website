@@ -120,10 +120,7 @@ function buildCandidates(
 
     const strOptions = options[stringIdx];
 
-    // Option 1: skip this string
-    dfs(stringIdx + 1, current, currentMin, currentMax, coveredPcs);
-
-    // Option 2: play a fret on this string
+    // Option 1: play a fret on this string (try before skipping so dense voicings fill the limit first)
     for (const { fret, pc } of strOptions.frets) {
       const newMin = current.length === 0 || fret === 0 ? currentMin : Math.min(currentMin, fret > 0 ? fret : currentMin);
       const newMax = fret === 0 ? currentMax : Math.max(currentMax, fret);
@@ -142,6 +139,9 @@ function buildCandidates(
         newCovered
       );
     }
+
+    // Option 2: skip this string
+    dfs(stringIdx + 1, current, currentMin, currentMax, coveredPcs);
   }
 
   dfs(0, [], Infinity, 0, new Set());
