@@ -5,6 +5,8 @@ import { chordPitchClasses } from '../../lib/music/chords';
 interface ProgressionSuggestionsProps {
   suggestions: ProgressionSuggestion[];
   onChordClick: (pcs: PitchClass[], rootPc: PitchClass) => void;
+  onAddFretboard: (suggestion: ProgressionSuggestion) => void;
+  secondaryChordName: string | null;
 }
 
 const FUNCTION_COLORS: Record<string, string> = {
@@ -17,6 +19,8 @@ const FUNCTION_COLORS: Record<string, string> = {
 export const ProgressionSuggestions: React.FC<ProgressionSuggestionsProps> = ({
   suggestions,
   onChordClick,
+  onAddFretboard,
+  secondaryChordName,
 }) => {
   if (suggestions.length === 0) return null;
 
@@ -26,6 +30,7 @@ export const ProgressionSuggestions: React.FC<ProgressionSuggestionsProps> = ({
       <div className="progression-list">
         {suggestions.map((s, i) => {
           const pcs = chordPitchClasses(s.root.pitchClass, s.formula.intervals) as PitchClass[];
+          const isSecondary = secondaryChordName === s.chord;
           return (
             <div
               key={i}
@@ -39,6 +44,13 @@ export const ProgressionSuggestions: React.FC<ProgressionSuggestionsProps> = ({
                 <span className={`prog-func ${FUNCTION_COLORS[s.function] ?? ''}`}>
                   {s.function}
                 </span>
+                <button
+                  className={`prog-add-btn${isSecondary ? ' active' : ''}`}
+                  title={isSecondary ? 'Close second fretboard' : 'Open on second fretboard'}
+                  onClick={(e) => { e.stopPropagation(); onAddFretboard(s); }}
+                >
+                  {isSecondary ? '✕' : '+'}
+                </button>
               </div>
               <div className="prog-feel">{s.feel}</div>
             </div>

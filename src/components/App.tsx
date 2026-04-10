@@ -10,7 +10,7 @@ import { ProgressionSuggestions } from './Results/ProgressionSuggestions';
 import { KeyCompatibility } from './Results/KeyCompatibility';
 import { Legend } from './Legend';
 import { useAppState } from '../hooks/useAppState';
-import type { PitchClass } from '../types';
+import type { PitchClass, ProgressionSuggestion } from '../types';
 import { chordPitchClasses } from '../lib/music/chords';
 import './App.css';
 
@@ -20,6 +20,19 @@ export const App: React.FC = () => {
 
   function handleProgressionClick(pcs: PitchClass[], _rootPc: PitchClass) {
     state.setActiveVoicingPcs(pcs);
+  }
+
+  function handleAddFretboard(s: ProgressionSuggestion) {
+    if (state.secondaryChord?.name === s.chord) {
+      state.setSecondaryChord(null);
+    } else {
+      state.setSecondaryChord({
+        name: s.chord,
+        pcs: chordPitchClasses(s.root.pitchClass, s.formula.intervals) as PitchClass[],
+        rootPc: s.root.pitchClass,
+        formula: s.formula,
+      });
+    }
   }
 
   const topChordPcs = state.topChord
@@ -61,6 +74,34 @@ export const App: React.FC = () => {
           />
         </section>
 
+        {state.secondaryChord && (
+          <section className="fretboard-section secondary-fretboard">
+            <div className="secondary-fretboard-header">
+              <span className="secondary-fretboard-title">{state.secondaryChord.name}</span>
+              <VoicingPicker
+                voicings={state.secondaryVoicings}
+                activeVoicing={state.secondaryVoicing}
+                onSelect={state.setSecondaryVoicing}
+              />
+              <button
+                className="btn-ghost small secondary-fretboard-close"
+                onClick={() => state.setSecondaryChord(null)}
+              >✕ Close</button>
+            </div>
+            <Fretboard
+              tuning={state.tuning}
+              fretCount={state.fretCount}
+              selectedPositions={[]}
+              activeVoicingPcs={state.secondaryChord.pcs}
+              activeVoicing={state.secondaryVoicing}
+              activeKey={null}
+              activeScalePosition={null}
+              rootPc={state.secondaryChord.rootPc}
+              onToggle={() => {}}
+            />
+          </section>
+        )}
+
         <div className="results-strip">
           <ChordDisplay result={state.chordResult} />
           {state.chordResult && state.chordResult.interpretations.length > 0 && topChordPcs && (
@@ -74,6 +115,8 @@ export const App: React.FC = () => {
           <ProgressionSuggestions
             suggestions={state.progressionSuggestions}
             onChordClick={handleProgressionClick}
+            onAddFretboard={handleAddFretboard}
+            secondaryChordName={state.secondaryChord?.name ?? null}
           />
         </div>
         </div>{/* end .main-column */}

@@ -31,6 +31,13 @@ function defaultTuning(count: StringCount, instrument: InstrumentType = 'guitar'
   return instrument === 'bass' ? BASS_6_STANDARD : STANDARD_6;
 }
 
+export interface SecondaryChord {
+  name: string;
+  pcs: PitchClass[];
+  rootPc: PitchClass;
+  formula: ChordFormula;
+}
+
 export interface AppState {
   stringCount: StringCount;
   tuning: TuningConfig;
@@ -47,6 +54,9 @@ export interface AppState {
   voicings: Voicing[];
   activeVoicing: Voicing | null;
   activeChordRootPc: PitchClass | null;
+  secondaryChord: SecondaryChord | null;
+  secondaryVoicings: Voicing[];
+  secondaryVoicing: Voicing | null;
 }
 
 export interface AppActions {
@@ -62,6 +72,8 @@ export interface AppActions {
   setActiveScalePosition: (pos: ScalePosition | null) => void;
   setActiveChord: (pcs: PitchClass[] | null, rootPc: PitchClass | null, formula: ChordFormula | null) => void;
   setActiveVoicing: (v: Voicing | null) => void;
+  setSecondaryChord: (chord: SecondaryChord | null) => void;
+  setSecondaryVoicing: (v: Voicing | null) => void;
 }
 
 export function useAppState(): AppState & AppActions {
@@ -76,6 +88,8 @@ export function useAppState(): AppState & AppActions {
   const [activeChordRootPc, setActiveChordRootPc] = useState<PitchClass | null>(null);
   const [activeChordFormula, setActiveChordFormula] = useState<ChordFormula | null>(null);
   const [activeVoicing, setActiveVoicing] = useState<Voicing | null>(null);
+  const [secondaryChord, setSecondaryChord] = useState<SecondaryChord | null>(null);
+  const [secondaryVoicing, setSecondaryVoicing] = useState<Voicing | null>(null);
 
   // Derived state
   const grid = generateFretboard(tuning, fretCount);
@@ -122,6 +136,11 @@ export function useAppState(): AppState & AppActions {
     return generateVoicings(activeChordRootPc, activeChordFormula, tuning);
   }, [activeChordRootPc, activeChordFormula, tuning]);
 
+  const secondaryVoicings = useMemo(() => {
+    if (!secondaryChord) return [];
+    return generateVoicings(secondaryChord.rootPc, secondaryChord.formula, tuning);
+  }, [secondaryChord, tuning]);
+
   const setActiveChord = useCallback((
     pcs: PitchClass[] | null,
     rootPc: PitchClass | null,
@@ -130,9 +149,12 @@ export function useAppState(): AppState & AppActions {
     setActiveVoicingPcs(pcs);
     setActiveChordRootPc(rootPc);
     setActiveChordFormula(formula);
-    // activeVoicing is reset to null here; the component re-renders and
-    // voicings useMemo produces the new list — VoicingPicker auto-selects [0]
     setActiveVoicing(null);
+  }, []);
+
+  const handleSetSecondaryChord = useCallback((chord: SecondaryChord | null) => {
+    setSecondaryChord(chord);
+    setSecondaryVoicing(null); // VoicingPicker will auto-select [0] via useEffect
   }, []);
 
   return {
@@ -151,6 +173,9 @@ export function useAppState(): AppState & AppActions {
     voicings,
     activeVoicing,
     activeChordRootPc,
+    secondaryChord,
+    secondaryVoicings,
+    secondaryVoicing,
     setStringCount,
     setTuning,
     setFretCount,
@@ -163,5 +188,7 @@ export function useAppState(): AppState & AppActions {
     setActiveScalePosition,
     setActiveChord,
     setActiveVoicing,
+    setSecondaryChord: handleSetSecondaryChord,
+    setSecondaryVoicing,
   };
 }

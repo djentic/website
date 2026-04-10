@@ -89,6 +89,63 @@ body {
   min-width: 0;
 }
 
+/* ===== Secondary fretboard ===== */
+.secondary-fretboard {
+  flex: none;
+  border-top: 1px solid var(--color-border);
+  max-height: 260px;
+  overflow: auto;
+  background: var(--color-surface);
+}
+
+.secondary-fretboard-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.secondary-fretboard-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.secondary-fretboard-header .voicing-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+  grid-template-columns: unset;
+  flex: 1;
+  min-width: 0;
+}
+
+.secondary-fretboard-header .voicing-btn {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.secondary-fretboard-header .control-section {
+  padding: 0;
+  border-bottom: none;
+}
+
+.secondary-fretboard-header .control-section h3 {
+  display: none;
+}
+
+.secondary-fretboard-close {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 /* ===== Results strip (below fretboard, spans full main-column width) ===== */
 .results-strip {
   display: flex;
@@ -634,6 +691,34 @@ button {
 .prog-feel {
   font-size: 11px;
   color: var(--color-text-muted);
+}
+
+.prog-add-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.1s;
+}
+
+.prog-add-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.prog-add-btn.active {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
 }
 
 /* Legend */
