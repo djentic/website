@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import type { PitchClass, KeyInfo } from '../../types';
+import type { PitchClass, KeyInfo, ChordFormula } from '../../types';
 import { parseChordName, chordPitchClasses } from '../../lib/music/chords';
 import { diatonicChords, isChordDiatonic } from '../../lib/music/scales';
 
 interface ChordSearchProps {
   activeKey: KeyInfo | null;
-  onChordSelect: (pcs: PitchClass[] | null, rootPc: PitchClass | null) => void;
+  onChordSelect: (pcs: PitchClass[] | null, rootPc: PitchClass | null, formula: ChordFormula | null) => void;
 }
 
 const CHORD_OPTIONS = [
@@ -30,7 +30,7 @@ export const ChordSearch: React.FC<ChordSearchProps> = ({ activeKey, onChordSele
       return;
     }
     const pcs = chordPitchClasses(parsed.rootPc, parsed.formula.intervals) as PitchClass[];
-    onChordSelect(pcs, parsed.rootPc);
+    onChordSelect(pcs, parsed.rootPc, parsed.formula);
   }
 
   // Precompute which quick-list chips are diatonic to the active key
@@ -77,7 +77,7 @@ export const ChordSearch: React.FC<ChordSearchProps> = ({ activeKey, onChordSele
                 onClick={() => {
                   setInput(c.name);
                   const pcs = chordPitchClasses(c.rootPc, c.formula.intervals) as PitchClass[];
-                  onChordSelect(pcs, c.rootPc);
+                  onChordSelect(pcs, c.rootPc, c.formula);
                 }}
               >
                 {c.name}
@@ -99,7 +99,7 @@ export const ChordSearch: React.FC<ChordSearchProps> = ({ activeKey, onChordSele
         ))}
       </div>
 
-      <button className="btn-ghost small" onClick={() => onChordSelect(null, null)}>
+      <button className="btn-ghost small" onClick={() => onChordSelect(null, null, null)}>
         Clear highlight
       </button>
     </div>

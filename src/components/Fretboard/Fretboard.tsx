@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TuningConfig, FretPosition, PitchClass, KeyInfo, FretNote, ScalePosition } from '../../types';
+import type { TuningConfig, FretPosition, PitchClass, KeyInfo, FretNote, ScalePosition, Voicing } from '../../types';
 import { generateFretboard, FRET_MARKERS, DOUBLE_MARKERS } from '../../lib/music/fretboard';
 import './Fretboard.css';
 
@@ -8,6 +8,7 @@ interface FretboardProps {
   fretCount: number;
   selectedPositions: FretPosition[];
   activeVoicingPcs: PitchClass[] | null;
+  activeVoicing: Voicing | null;
   activeKey: KeyInfo | null;
   activeScalePosition: ScalePosition | null;
   rootPc: PitchClass | null;
@@ -26,6 +27,7 @@ function noteRole(
   note: FretNote,
   isSelected: boolean,
   activeVoicingPcs: PitchClass[] | null,
+  activeVoicing: Voicing | null,
   activeKey: KeyInfo | null,
   activeScalePosition: ScalePosition | null,
   rootPc: PitchClass | null
@@ -36,15 +38,17 @@ function noteRole(
     activeScalePosition !== null &&
     (note.position.fret < activeScalePosition.minFret ||
      note.position.fret > activeScalePosition.maxFret);
-  const isChordRoot = activeVoicingPcs !== null
-    && rootPc === note.pitchClass
-    && activeVoicingPcs.includes(note.pitchClass);
-  const inChord     = activeVoicingPcs !== null && activeVoicingPcs.includes(note.pitchClass);
+  const inChord = activeVoicing
+    ? activeVoicing.positions.some(
+        (p) => p.stringIndex === note.position.stringIndex && p.fret === note.position.fret
+      )
+    : activeVoicingPcs !== null && activeVoicingPcs.includes(note.pitchClass);
+  const isChordRoot = inChord && rootPc === note.pitchClass;
   const scaleDegree = activeKey?.degreeMap.get(note.pitchClass);
   const inKey       = scaleDegree !== undefined && !outsidePosition;
 
   // No overlay at all — show note name dimly on every fret
-  if (!isSelected && activeVoicingPcs === null && activeKey === null) {
+  if (!isSelected && activeVoicingPcs === null && activeVoicing === null && activeKey === null) {
     return { role: 'none', label: note.noteName, colors: [] };
   }
 
@@ -104,6 +108,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
   fretCount,
   selectedPositions,
   activeVoicingPcs,
+  activeVoicing,
   activeKey,
   activeScalePosition,
   rootPc,
@@ -138,7 +143,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
               {notes.map((note) => {
                 const key = `${note.position.stringIndex}-${note.position.fret}`;
                 const isSelected = selectedSet.has(key);
-                const { role, label, colors } = noteRole(note, isSelected, activeVoicingPcs, activeKey, activeScalePosition, rootPc);
+                const { role, label, colors } = noteRole(note, isSelected, activeVoicingPcs, activeVoicing, activeKey, activeScalePosition, rootPc);
                 const fret = note.position.fret;
 
                 return (
