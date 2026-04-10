@@ -61,22 +61,33 @@ export const App: React.FC = () => {
       <main className="app-body">
         <div className="main-column">
         <section className="fretboard-section">
-          <Fretboard
-            tuning={state.tuning}
-            fretCount={state.fretCount}
-            selectedPositions={state.selectedPositions}
-            activeVoicingPcs={state.activeVoicingPcs}
-            activeVoicing={state.activeVoicing}
-            activeKey={state.activeKey}
-            activeScalePosition={state.activeScalePosition}
-            rootPc={rootPc}
-            onToggle={state.togglePosition}
-          />
+          {state.voicings.length > 0 && (
+            <div className="fretboard-header">
+              <VoicingPicker
+                voicings={state.voicings}
+                activeVoicing={state.activeVoicing}
+                onSelect={state.setActiveVoicing}
+              />
+            </div>
+          )}
+          <div className="fretboard-scroll">
+            <Fretboard
+              tuning={state.tuning}
+              fretCount={state.fretCount}
+              selectedPositions={state.selectedPositions}
+              activeVoicingPcs={state.activeVoicingPcs}
+              activeVoicing={state.activeVoicing}
+              activeKey={state.activeKey}
+              activeScalePosition={state.activeScalePosition}
+              rootPc={rootPc}
+              onToggle={state.togglePosition}
+            />
+          </div>
         </section>
 
         {state.secondaryChord && (
           <section className="fretboard-section secondary-fretboard">
-            <div className="secondary-fretboard-header">
+            <div className="fretboard-header">
               <span className="secondary-fretboard-title">{state.secondaryChord.name}</span>
               <VoicingPicker
                 voicings={state.secondaryVoicings}
@@ -88,17 +99,19 @@ export const App: React.FC = () => {
                 onClick={() => state.setSecondaryChord(null)}
               >✕ Close</button>
             </div>
-            <Fretboard
-              tuning={state.tuning}
-              fretCount={state.fretCount}
-              selectedPositions={[]}
-              activeVoicingPcs={state.secondaryChord.pcs}
-              activeVoicing={state.secondaryVoicing}
-              activeKey={null}
-              activeScalePosition={null}
-              rootPc={state.secondaryChord.rootPc}
-              onToggle={() => {}}
-            />
+            <div className="fretboard-scroll">
+              <Fretboard
+                tuning={state.tuning}
+                fretCount={state.fretCount}
+                selectedPositions={[]}
+                activeVoicingPcs={state.secondaryChord.pcs}
+                activeVoicing={state.secondaryVoicing}
+                activeKey={null}
+                activeScalePosition={null}
+                rootPc={state.secondaryChord.rootPc}
+                onToggle={() => {}}
+              />
+            </div>
           </section>
         )}
 
@@ -149,19 +162,12 @@ export const App: React.FC = () => {
           )}
 
           {activeTab === 'chord' && (
-            <>
-              <ChordSearch
-                activeKey={state.activeKey}
-                onChordSelect={(pcs, rootPc, formula) => {
-                  state.setActiveChord(pcs, rootPc, formula);
-                }}
-              />
-              <VoicingPicker
-                voicings={state.voicings}
-                activeVoicing={state.activeVoicing}
-                onSelect={state.setActiveVoicing}
-              />
-            </>
+            <ChordSearch
+              activeKey={state.activeKey}
+              onChordSelect={(pcs, rootPc, formula) => {
+                state.setActiveChord(pcs, rootPc, formula);
+              }}
+            />
           )}
 
           {activeTab === 'key' && (
