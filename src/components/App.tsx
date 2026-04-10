@@ -64,7 +64,12 @@ export const App: React.FC = () => {
         <div className="results-strip">
           <ChordDisplay result={state.chordResult} />
           {state.chordResult && state.chordResult.interpretations.length > 0 && topChordPcs && (
-            <KeyCompatibility chordPcs={topChordPcs} />
+            <KeyCompatibility
+              chordPcs={topChordPcs}
+              activeKey={state.activeKey}
+              onKeyToggle={state.setKey}
+              onKeyClear={() => { state.setActiveKey(null); state.setActiveScalePosition(null); }}
+            />
           )}
           <ProgressionSuggestions
             suggestions={state.progressionSuggestions}

@@ -532,6 +532,9 @@ button {
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 11px;
+  cursor: pointer;
+  transition: all 0.1s;
+  font-weight: 500;
 }
 
 .key-chip.diatonic {
@@ -540,10 +543,32 @@ button {
   color: var(--color-scale-degree);
 }
 
+.key-chip.diatonic:hover {
+  background: rgba(133, 153, 0, 0.3);
+  border-color: var(--color-scale-degree);
+}
+
+.key-chip.diatonic.active {
+  background: var(--color-scale-degree);
+  border-color: var(--color-scale-degree);
+  color: var(--color-bg);
+}
+
 .key-chip.borrowed {
   background: var(--color-surface2);
   border: 1px solid var(--color-border);
   color: var(--color-text-muted);
+}
+
+.key-chip.borrowed:hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
+.key-chip.borrowed.active {
+  background: var(--color-text-muted);
+  border-color: var(--color-text-muted);
+  color: var(--color-bg);
 }
 
 .key-chip em {
