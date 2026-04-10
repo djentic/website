@@ -118,7 +118,7 @@ export function useAppState(): AppState & AppActions {
   }, []);
 
   const voicings = useMemo(() => {
-    if (!activeChordRootPc || !activeChordFormula) return [];
+    if (activeChordRootPc === null || !activeChordFormula) return [];
     return generateVoicings(activeChordRootPc, activeChordFormula, tuning);
   }, [activeChordRootPc, activeChordFormula, tuning]);
 
