@@ -100,6 +100,7 @@ export const App: React.FC = () => {
               tuning={state.tuning}
               fretMin={state.fretMin}
               fretMax={state.fretMax}
+              capoFret={state.capoFret}
               selectedPositions={state.selectedPositions}
               activeVoicingPcs={state.activeVoicingPcs}
               activeVoicing={state.activeVoicing}
@@ -131,6 +132,7 @@ export const App: React.FC = () => {
                 tuning={state.tuning}
                 fretMin={state.fretMin}
                 fretMax={state.fretMax}
+                capoFret={state.capoFret}
                 selectedPositions={[]}
                 activeVoicingPcs={state.secondaryChord.pcs}
                 activeVoicing={state.secondaryVoicing}
@@ -185,9 +187,11 @@ export const App: React.FC = () => {
               tuning={state.tuning}
               fretMin={state.fretMin}
               fretMax={state.fretMax}
+              capoFret={state.capoFret}
               onStringCountChange={state.setStringCount}
               onTuningChange={state.setTuning}
               onFretRangeChange={state.setFretRange}
+              onCapoChange={state.setCapoFret}
             />
           )}
 

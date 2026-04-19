@@ -8,6 +8,7 @@ interface FretboardProps {
   tuning: TuningConfig;
   fretMin: number;
   fretMax: number;
+  capoFret?: number;
   selectedPositions: FretPosition[];
   activeVoicingPcs: PitchClass[] | null;
   activeVoicing: Voicing | null;
@@ -110,6 +111,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
   tuning,
   fretMin,
   fretMax,
+  capoFret = 0,
   selectedPositions,
   activeVoicingPcs,
   activeVoicing,
@@ -133,7 +135,9 @@ export const Fretboard: React.FC<FretboardProps> = ({
         <div className="fret-header">
           <div className="string-label-spacer" />
           {visibleFrets.map((f) => (
-            <div key={f} className={`fret-number${f === 0 ? ' fret-number-nut' : ''}`}>{f === 0 ? '' : f}</div>
+            <div key={f} className={`fret-number${f === 0 ? ' fret-number-nut' : ''}${f === capoFret && capoFret > 0 ? ' fret-number-capo' : ''}`}>
+              {f === 0 ? '' : f === capoFret && capoFret > 0 ? `${f} ⌫` : f}
+            </div>
           ))}
         </div>
 
@@ -162,6 +166,9 @@ export const Fretboard: React.FC<FretboardProps> = ({
                   : ''
                   : '';
 
+                const isCapoBlocked = capoFret > 0 && fret < capoFret && fret !== 0;
+                const isCapoBar    = capoFret > 0 && fret === capoFret;
+
                 return (
                   <div
                     key={fret}
@@ -170,9 +177,11 @@ export const Fretboard: React.FC<FretboardProps> = ({
                       fret === 0 ? 'nut' : '',
                       FRET_MARKERS.includes(fret) ? 'marker' : '',
                       DOUBLE_MARKERS.includes(fret) ? 'double-marker' : '',
+                      isCapoBlocked ? 'capo-blocked' : '',
+                      isCapoBar     ? 'capo-bar'     : '',
                     ].filter(Boolean).join(' ')}
-                    onClick={() => onToggle(note.position)}
-                    title={`${note.noteName} — string ${str.stringIndex + 1}, fret ${fret}`}
+                    onClick={() => !isCapoBlocked && onToggle(note.position)}
+                    title={isCapoBlocked ? `Blocked by capo at fret ${capoFret}` : `${note.noteName} — string ${str.stringIndex + 1}, fret ${fret}`}
                   >
                     {fret > 0 && <div className="string-line" />}
                     {synesthesia ? (

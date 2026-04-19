@@ -80,6 +80,34 @@
   pointer-events: none;
 }
 
+/* Capo */
+.fret-cell.capo-blocked {
+  cursor: default;
+  opacity: 0.25;
+}
+
+.fret-cell.capo-blocked .note-dot {
+  pointer-events: none;
+}
+
+.fret-cell.capo-bar::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 4px;
+  bottom: 4px;
+  width: 6px;
+  background: var(--color-nut);
+  border-radius: 3px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.fret-number-capo {
+  color: var(--color-text) !important;
+  font-weight: 600;
+}
+
 /* String line running through the fret */
 .string-line {
   position: absolute;

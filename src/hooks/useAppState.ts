@@ -43,6 +43,7 @@ export interface AppState {
   tuning: TuningConfig;
   fretMin: number;
   fretMax: number;
+  capoFret: number;
   selectedPositions: FretPosition[];
   mode: AppMode;
   chordResult: ChordResult | null;
@@ -64,6 +65,7 @@ export interface AppActions {
   setStringCount: (n: StringCount, instrument?: InstrumentType) => void;
   setTuning: (t: TuningConfig) => void;
   setFretRange: (min: number, max: number) => void;
+  setCapoFret: (n: number) => void;
   togglePosition: (pos: FretPosition) => void;
   clearSelection: () => void;
   setMode: (m: AppMode) => void;
@@ -82,6 +84,7 @@ export function useAppState(): AppState & AppActions {
   const [tuning, setTuningState] = useState<TuningConfig>(STANDARD_6);
   const [fretMin, setFretMin] = useState(0);
   const [fretMax, setFretMax] = useState(22);
+  const [capoFret, setCapoFret] = useState(0);
   const [selectedPositions, setSelectedPositions] = useState<FretPosition[]>([]);
   const [mode, setMode] = useState<AppMode>('select');
   const [activeVoicingPcs, setActiveVoicingPcs] = useState<PitchClass[] | null>(null);
@@ -169,6 +172,7 @@ export function useAppState(): AppState & AppActions {
     tuning,
     fretMin,
     fretMax,
+    capoFret,
     selectedPositions,
     mode,
     chordResult,
@@ -187,6 +191,7 @@ export function useAppState(): AppState & AppActions {
     setStringCount,
     setTuning,
     setFretRange,
+    setCapoFret,
     togglePosition,
     clearSelection,
     setMode,

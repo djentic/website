@@ -10,9 +10,11 @@ interface TuningControlProps {
   tuning: TuningConfig;
   fretMin: number;
   fretMax: number;
+  capoFret: number;
   onStringCountChange: (n: StringCount, instrument?: InstrumentType) => void;
   onTuningChange: (t: TuningConfig) => void;
   onFretRangeChange: (min: number, max: number) => void;
+  onCapoChange: (n: number) => void;
 }
 
 const GUITAR_STRING_COUNTS: StringCount[] = [6, 7, 8];
@@ -23,9 +25,11 @@ export const TuningControl: React.FC<TuningControlProps> = ({
   tuning,
   fretMin,
   fretMax,
+  capoFret,
   onStringCountChange,
   onTuningChange,
   onFretRangeChange,
+  onCapoChange,
 }) => {
   const [instrument, setInstrument] = useState<InstrumentType>('guitar');
 
@@ -152,6 +156,16 @@ export const TuningControl: React.FC<TuningControlProps> = ({
             className="dual-range-input"
           />
         </div>
+      </div>
+
+      <div className="control-row">
+        <label>Capo</label>
+        <select value={capoFret} onChange={(e) => onCapoChange(Number(e.target.value))}>
+          <option value={0}>None</option>
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((f) => (
+            <option key={f} value={f}>Fret {f}</option>
+          ))}
+        </select>
       </div>
     </div>
   );
