@@ -53,7 +53,7 @@ body {
 .mobile-warning-overlay {
   position: fixed;
   inset: 0;
-  background: #1a1a1a;
+  background: var(--color-bg);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -63,30 +63,34 @@ body {
 
 .mobile-warning-content {
   text-align: center;
-  color: #e0e0e0;
   max-width: 320px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 32px 24px;
 }
 
 .mobile-warning-content h2 {
-  font-size: 22px;
-  margin-bottom: 16px;
-  color: #fff;
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--color-text);
 }
 
 .mobile-warning-content p {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
   margin-bottom: 28px;
-  color: #aaa;
+  color: var(--color-text-muted);
 }
 
 .mobile-warning-content button {
-  background: #4a90d9;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-bg);
   border: none;
   border-radius: 6px;
   padding: 12px 32px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
 }
 
