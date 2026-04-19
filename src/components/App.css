@@ -432,9 +432,28 @@ button {
 }
 
 .btn-ghost.small,
-.btn-primary.small {
+.btn-primary.small,
+.btn-dim.small {
   padding: 3px 8px;
   font-size: 11px;
+}
+
+.btn-dim {
+  background: transparent;
+  border: 1px solid var(--color-text-muted);
+  color: var(--color-text);
+  padding: 6px 12px;
+}
+
+.btn-dim:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.header-clear-group {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
 }
 
 .chip {

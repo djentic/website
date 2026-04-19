@@ -60,7 +60,7 @@ export interface AppState {
 }
 
 export interface AppActions {
-  setStringCount: (n: StringCount) => void;
+  setStringCount: (n: StringCount, instrument?: InstrumentType) => void;
   setTuning: (t: TuningConfig) => void;
   setFretCount: (n: number) => void;
   togglePosition: (pos: FretPosition) => void;
@@ -103,9 +103,9 @@ export function useAppState(): AppState & AppActions {
     [activeKey, tuning, fretCount]
   );
 
-  const setStringCount = useCallback((n: StringCount) => {
+  const setStringCount = useCallback((n: StringCount, instrument: InstrumentType = 'guitar') => {
     setStringCountState(n);
-    setTuningState(defaultTuning(n));
+    setTuningState(defaultTuning(n, instrument));
     setSelectedPositions([]);
   }, []);
 

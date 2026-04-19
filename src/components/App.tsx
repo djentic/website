@@ -53,9 +53,17 @@ export const App: React.FC = () => {
       <header className="app-header">
         <h1>Theory Visualiser</h1>
         <Legend />
-        <button className="btn-ghost small" onClick={state.clearSelection}>
-          Clear selection
-        </button>
+        <div className="header-clear-group">
+          <button className="btn-dim small" onClick={state.clearSelection}>
+            Clear selected
+          </button>
+          <button className="btn-dim small" onClick={() => state.setActiveChord(null, null, null)}>
+            Clear chord highlight
+          </button>
+          <button className="btn-dim small" onClick={() => { state.setActiveKey(null); state.setActiveScalePosition(null); }}>
+            Clear key
+          </button>
+        </div>
       </header>
 
       <main className="app-body">

@@ -7,7 +7,7 @@ interface TuningControlProps {
   stringCount: StringCount;
   tuning: TuningConfig;
   fretCount: number;
-  onStringCountChange: (n: StringCount) => void;
+  onStringCountChange: (n: StringCount, instrument?: InstrumentType) => void;
   onTuningChange: (t: TuningConfig) => void;
   onFretCountChange: (n: number) => void;
 }
@@ -30,11 +30,11 @@ export const TuningControl: React.FC<TuningControlProps> = ({
   function handleInstrumentChange(inst: InstrumentType) {
     setInstrument(inst);
     const defaultCount: StringCount = inst === 'bass' ? 4 : 6;
-    onStringCountChange(defaultCount);
+    onStringCountChange(defaultCount, inst);
   }
 
   function handleStringCountChange(n: StringCount) {
-    onStringCountChange(n);
+    onStringCountChange(n, instrument);
   }
 
   function handlePresetChange(e: React.ChangeEvent<HTMLSelectElement>) {

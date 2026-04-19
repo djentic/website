@@ -126,7 +126,8 @@ function buildCandidates(
       const newMax = fret === 0 ? currentMax : Math.max(currentMax, fret);
       const span = newMax > 0 && newMin > 0 && newMax !== Infinity ? newMax - newMin : 0;
 
-      if (span > maxFretSpan) continue;
+      const effectiveMax = newMin !== Infinity && newMin >= 10 ? Infinity : maxFretSpan;
+      if (span > effectiveMax) continue;
 
       const newCovered = new Set(coveredPcs);
       newCovered.add(pc);
