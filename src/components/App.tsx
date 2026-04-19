@@ -12,11 +12,13 @@ import { Legend } from './Legend';
 import { useAppState } from '../hooks/useAppState';
 import type { PitchClass, ProgressionSuggestion } from '../types';
 import { chordPitchClasses } from '../lib/music/chords';
+import { SYNESTHESIA_COLORS, NOTE_NAMES } from '../lib/music/synesthesia';
 import './App.css';
 
 export const App: React.FC = () => {
   const state = useAppState();
   const [activeTab, setActiveTab] = useState<'tune' | 'chord' | 'key'>('tune');
+  const [synesthesia, setSynesthesia] = useState(false);
 
   function handleProgressionClick(pcs: PitchClass[], _rootPc: PitchClass) {
     state.setActiveVoicingPcs(pcs);
@@ -53,6 +55,21 @@ export const App: React.FC = () => {
       <header className="app-header">
         <h1>Theory Visualiser</h1>
         <Legend />
+        <button
+          className={`btn-dim small synesthesia-toggle${synesthesia ? ' active' : ''}`}
+          onClick={() => setSynesthesia((v) => !v)}
+        >
+          Synesthesia
+        </button>
+        {synesthesia && (
+          <div className="synesthesia-key">
+            {(Object.entries(SYNESTHESIA_COLORS) as [string, string][]).map(([pc, color]) => (
+              <div key={pc} className="syn-chip" style={{ background: color }} title={NOTE_NAMES[Number(pc) as PitchClass]}>
+                {NOTE_NAMES[Number(pc) as PitchClass]}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="header-clear-group">
           <button className="btn-dim small" onClick={state.clearSelection}>
             Clear selected
@@ -88,6 +105,7 @@ export const App: React.FC = () => {
               activeKey={state.activeKey}
               activeScalePosition={state.activeScalePosition}
               rootPc={rootPc}
+              synesthesia={synesthesia}
               onToggle={state.togglePosition}
             />
           </div>
@@ -117,6 +135,7 @@ export const App: React.FC = () => {
                 activeKey={null}
                 activeScalePosition={null}
                 rootPc={state.secondaryChord.rootPc}
+                synesthesia={synesthesia}
                 onToggle={() => {}}
               />
             </div>

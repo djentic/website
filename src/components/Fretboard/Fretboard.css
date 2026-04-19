@@ -147,6 +147,12 @@
   font-size: 10px;
 }
 
+.note-dot.synesthesia {
+  color: var(--color-bg);
+  font-size: 10px;
+  font-weight: 600;
+}
+
 /* Fret position marker dots (bottom of neck) */
 .fret-dot-row {
   padding-top: 6px;

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { TuningConfig, FretPosition, PitchClass, KeyInfo, FretNote, ScalePosition, Voicing } from '../../types';
 import { generateFretboard, FRET_MARKERS, DOUBLE_MARKERS } from '../../lib/music/fretboard';
+import { SYNESTHESIA_COLORS } from '../../lib/music/synesthesia';
 import './Fretboard.css';
 
 interface FretboardProps {
@@ -12,6 +13,7 @@ interface FretboardProps {
   activeKey: KeyInfo | null;
   activeScalePosition: ScalePosition | null;
   rootPc: PitchClass | null;
+  synesthesia?: boolean;
   onToggle: (pos: FretPosition) => void;
 }
 
@@ -112,6 +114,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
   activeKey,
   activeScalePosition,
   rootPc,
+  synesthesia = false,
   onToggle,
 }) => {
   const grid = generateFretboard(tuning, fretCount);
@@ -146,6 +149,8 @@ export const Fretboard: React.FC<FretboardProps> = ({
                 const { role, label, colors } = noteRole(note, isSelected, activeVoicingPcs, activeVoicing, activeKey, activeScalePosition, rootPc);
                 const fret = note.position.fret;
 
+                const synColor = synesthesia ? SYNESTHESIA_COLORS[note.pitchClass] : undefined;
+
                 return (
                   <div
                     key={fret}
@@ -159,7 +164,14 @@ export const Fretboard: React.FC<FretboardProps> = ({
                     title={`${note.noteName} — string ${str.stringIndex + 1}, fret ${fret}`}
                   >
                     {fret > 0 && <div className="string-line" />}
-                    {role !== 'none' ? (
+                    {synesthesia ? (
+                      <div
+                        className={`note-dot synesthesia${isSelected ? ' user-selected' : ''}`}
+                        style={{ background: synColor, color: 'var(--color-bg)' }}
+                      >
+                        <span>{note.noteName}</span>
+                      </div>
+                    ) : role !== 'none' ? (
                       <div
                         className={`note-dot ${role}${isSelected ? ' user-selected' : ''}`}
                         style={colors.length > 1 ? {
