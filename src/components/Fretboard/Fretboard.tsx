@@ -6,7 +6,8 @@ import './Fretboard.css';
 
 interface FretboardProps {
   tuning: TuningConfig;
-  fretCount: number;
+  fretMin: number;
+  fretMax: number;
   selectedPositions: FretPosition[];
   activeVoicingPcs: PitchClass[] | null;
   activeVoicing: Voicing | null;
@@ -107,7 +108,8 @@ function noteRole(
 
 export const Fretboard: React.FC<FretboardProps> = ({
   tuning,
-  fretCount,
+  fretMin,
+  fretMax,
   selectedPositions,
   activeVoicingPcs,
   activeVoicing,
@@ -117,20 +119,21 @@ export const Fretboard: React.FC<FretboardProps> = ({
   synesthesia = false,
   onToggle,
 }) => {
-  const grid = generateFretboard(tuning, fretCount);
+  const grid = generateFretboard(tuning, fretMax);
   const selectedSet = new Set(selectedPositions.map((p) => `${p.stringIndex}-${p.fret}`));
+  const visibleFrets = Array.from({ length: fretMax - fretMin + 1 }, (_, i) => fretMin + i);
 
   // Strings stored low→high; display high→low (highest string at top)
   const displayStrings = [...tuning.strings].reverse();
 
   return (
     <div className="fretboard-wrapper">
-      <div className="fretboard" style={{ '--fret-count': fretCount } as React.CSSProperties}>
+      <div className="fretboard">
         {/* Fret number header */}
         <div className="fret-header">
           <div className="string-label-spacer" />
-          {Array.from({ length: fretCount + 1 }, (_, f) => (
-            <div key={f} className="fret-number">{f === 0 ? '' : f}</div>
+          {visibleFrets.map((f) => (
+            <div key={f} className={`fret-number${f === 0 ? ' fret-number-nut' : ''}`}>{f === 0 ? '' : f}</div>
           ))}
         </div>
 
@@ -143,7 +146,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
                 {str.displayName}
               </div>
 
-              {notes.map((note) => {
+              {notes.filter((note) => visibleFrets.includes(note.position.fret)).map((note) => {
                 const key = `${note.position.stringIndex}-${note.position.fret}`;
                 const isSelected = selectedSet.has(key);
                 const { role, label, colors } = noteRole(note, isSelected, activeVoicingPcs, activeVoicing, activeKey, activeScalePosition, rootPc);
@@ -206,7 +209,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
         {/* Position marker dots */}
         <div className="fret-dot-row">
           <div className="string-label-spacer" />
-          {Array.from({ length: fretCount + 1 }, (_, f) => (
+          {visibleFrets.map((f) => (
             <div key={f} className="fret-pos-marker">
               {DOUBLE_MARKERS.includes(f) ? (
                 <><span className="pos-dot" /><span className="pos-dot" /></>

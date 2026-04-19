@@ -3,13 +3,16 @@ import type { TuningConfig, StringCount, PitchClass, InstrumentType } from '../.
 import { getPresetsForStringCount } from '../../data/tunings';
 import { SHARP_NAMES } from '../../lib/music/notes';
 
+const MAX_FRETS = 24;
+
 interface TuningControlProps {
   stringCount: StringCount;
   tuning: TuningConfig;
-  fretCount: number;
+  fretMin: number;
+  fretMax: number;
   onStringCountChange: (n: StringCount, instrument?: InstrumentType) => void;
   onTuningChange: (t: TuningConfig) => void;
-  onFretCountChange: (n: number) => void;
+  onFretRangeChange: (min: number, max: number) => void;
 }
 
 const GUITAR_STRING_COUNTS: StringCount[] = [6, 7, 8];
@@ -18,10 +21,11 @@ const BASS_STRING_COUNTS: StringCount[] = [4, 5, 6];
 export const TuningControl: React.FC<TuningControlProps> = ({
   stringCount,
   tuning,
-  fretCount,
+  fretMin,
+  fretMax,
   onStringCountChange,
   onTuningChange,
-  onFretCountChange,
+  onFretRangeChange,
 }) => {
   const [instrument, setInstrument] = useState<InstrumentType>('guitar');
 
@@ -123,15 +127,31 @@ export const TuningControl: React.FC<TuningControlProps> = ({
         ))}
       </div>
 
-      <div className="control-row">
-        <label>Frets: {fretCount}</label>
-        <input
-          type="range"
-          min={12}
-          max={24}
-          value={fretCount}
-          onChange={(e) => onFretCountChange(Number(e.target.value))}
-        />
+      <div className="control-row fret-range-row">
+        <label>Frets: {fretMin}–{fretMax}</label>
+        <div className="dual-range">
+          <div className="dual-range-track">
+            <div
+              className="dual-range-fill"
+              style={{
+                left: `${(fretMin / MAX_FRETS) * 100}%`,
+                right: `${100 - (fretMax / MAX_FRETS) * 100}%`,
+              }}
+            />
+          </div>
+          <input
+            type="range" min={0} max={MAX_FRETS}
+            value={fretMin}
+            onChange={(e) => onFretRangeChange(Math.min(Number(e.target.value), fretMax - 1), fretMax)}
+            className="dual-range-input"
+          />
+          <input
+            type="range" min={0} max={MAX_FRETS}
+            value={fretMax}
+            onChange={(e) => onFretRangeChange(fretMin, Math.max(Number(e.target.value), fretMin + 1))}
+            className="dual-range-input"
+          />
+        </div>
       </div>
     </div>
   );

@@ -98,7 +98,8 @@ export const App: React.FC = () => {
           <div className="fretboard-scroll">
             <Fretboard
               tuning={state.tuning}
-              fretCount={state.fretCount}
+              fretMin={state.fretMin}
+              fretMax={state.fretMax}
               selectedPositions={state.selectedPositions}
               activeVoicingPcs={state.activeVoicingPcs}
               activeVoicing={state.activeVoicing}
@@ -128,7 +129,8 @@ export const App: React.FC = () => {
             <div className="fretboard-scroll">
               <Fretboard
                 tuning={state.tuning}
-                fretCount={state.fretCount}
+                fretMin={state.fretMin}
+                fretMax={state.fretMax}
                 selectedPositions={[]}
                 activeVoicingPcs={state.secondaryChord.pcs}
                 activeVoicing={state.secondaryVoicing}
@@ -181,10 +183,11 @@ export const App: React.FC = () => {
             <TuningControl
               stringCount={state.stringCount}
               tuning={state.tuning}
-              fretCount={state.fretCount}
+              fretMin={state.fretMin}
+              fretMax={state.fretMax}
               onStringCountChange={state.setStringCount}
               onTuningChange={state.setTuning}
-              onFretCountChange={state.setFretCount}
+              onFretRangeChange={state.setFretRange}
             />
           )}
 

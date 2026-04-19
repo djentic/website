@@ -41,7 +41,8 @@ export interface SecondaryChord {
 export interface AppState {
   stringCount: StringCount;
   tuning: TuningConfig;
-  fretCount: number;
+  fretMin: number;
+  fretMax: number;
   selectedPositions: FretPosition[];
   mode: AppMode;
   chordResult: ChordResult | null;
@@ -62,7 +63,7 @@ export interface AppState {
 export interface AppActions {
   setStringCount: (n: StringCount, instrument?: InstrumentType) => void;
   setTuning: (t: TuningConfig) => void;
-  setFretCount: (n: number) => void;
+  setFretRange: (min: number, max: number) => void;
   togglePosition: (pos: FretPosition) => void;
   clearSelection: () => void;
   setMode: (m: AppMode) => void;
@@ -79,7 +80,8 @@ export interface AppActions {
 export function useAppState(): AppState & AppActions {
   const [stringCount, setStringCountState] = useState<StringCount>(6);
   const [tuning, setTuningState] = useState<TuningConfig>(STANDARD_6);
-  const [fretCount, setFretCount] = useState(22);
+  const [fretMin, setFretMin] = useState(0);
+  const [fretMax, setFretMax] = useState(22);
   const [selectedPositions, setSelectedPositions] = useState<FretPosition[]>([]);
   const [mode, setMode] = useState<AppMode>('select');
   const [activeVoicingPcs, setActiveVoicingPcs] = useState<PitchClass[] | null>(null);
@@ -92,16 +94,21 @@ export function useAppState(): AppState & AppActions {
   const [secondaryVoicing, setSecondaryVoicing] = useState<Voicing | null>(null);
 
   // Derived state
-  const grid = generateFretboard(tuning, fretCount);
+  const grid = generateFretboard(tuning, fretMax);
   const selectedPcs = pitchClassesAtPositions(grid, selectedPositions);
   const chordResult = selectedPcs.length >= 2 ? detectChords(selectedPcs) : null;
   const topChord = chordResult?.interpretations[0] ?? null;
   const progressionSuggestions = topChord ? suggestProgressions(topChord) : [];
 
   const scalePositions = useMemo(
-    () => activeKey ? computePositions(activeKey, tuning, fretCount) : [],
-    [activeKey, tuning, fretCount]
+    () => activeKey ? computePositions(activeKey, tuning, fretMax) : [],
+    [activeKey, tuning, fretMax]
   );
+
+  const setFretRange = useCallback((min: number, max: number) => {
+    setFretMin(min);
+    setFretMax(max);
+  }, []);
 
   const setStringCount = useCallback((n: StringCount, instrument: InstrumentType = 'guitar') => {
     setStringCountState(n);
@@ -160,7 +167,8 @@ export function useAppState(): AppState & AppActions {
   return {
     stringCount,
     tuning,
-    fretCount,
+    fretMin,
+    fretMax,
     selectedPositions,
     mode,
     chordResult,
@@ -178,7 +186,7 @@ export function useAppState(): AppState & AppActions {
     secondaryVoicing,
     setStringCount,
     setTuning,
-    setFretCount,
+    setFretRange,
     togglePosition,
     clearSelection,
     setMode,
