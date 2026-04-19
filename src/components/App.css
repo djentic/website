@@ -50,13 +50,44 @@ body {
   overflow: hidden;
 }
 
-.mobile-warning {
-  background: #7c3a00;
-  color: #ffe0b2;
+.mobile-warning-overlay {
+  position: fixed;
+  inset: 0;
+  background: #1a1a1a;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.mobile-warning-content {
   text-align: center;
-  padding: 10px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid #a85200;
+  color: #e0e0e0;
+  max-width: 320px;
+}
+
+.mobile-warning-content h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.mobile-warning-content p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 28px;
+  color: #aaa;
+}
+
+.mobile-warning-content button {
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 32px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .app-header {

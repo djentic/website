@@ -20,6 +20,7 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tune' | 'chord' | 'key'>('tune');
   const [synesthesia, setSynesthesia] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px) and (pointer: coarse)').matches;
+  const [mobileWarningDismissed, setMobileWarningDismissed] = useState(false);
 
   function handleProgressionClick(pcs: PitchClass[], _rootPc: PitchClass) {
     state.setActiveVoicingPcs(pcs);
@@ -53,9 +54,13 @@ export const App: React.FC = () => {
 
   return (
     <div className="app">
-      {isMobile && (
-        <div className="mobile-warning">
-          This app works best on a desktop or tablet. Some features may not be usable on small screens.
+      {isMobile && !mobileWarningDismissed && (
+        <div className="mobile-warning-overlay">
+          <div className="mobile-warning-content">
+            <h2>Best on Desktop</h2>
+            <p>This app is designed for desktop and tablet use. On a small screen, many features will be difficult or impossible to use.</p>
+            <button onClick={() => setMobileWarningDismissed(true)}>OK, got it</button>
+          </div>
         </div>
       )}
       <header className="app-header">
