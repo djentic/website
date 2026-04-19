@@ -149,6 +149,8 @@ export const Fretboard: React.FC<FretboardProps> = ({
                 const { role, label, colors } = noteRole(note, isSelected, activeVoicingPcs, activeVoicing, activeKey, activeScalePosition, rootPc);
                 const fret = note.position.fret;
 
+                const hasOverlay = activeVoicingPcs !== null || activeVoicing !== null || activeKey !== null;
+                const synVisible = !hasOverlay || role !== 'none' || isSelected;
                 const synColor = synesthesia ? SYNESTHESIA_COLORS[note.pitchClass] : undefined;
                 const synIndicator = synesthesia
                   ? role === 'root' ? 'syn-root'
@@ -171,12 +173,16 @@ export const Fretboard: React.FC<FretboardProps> = ({
                   >
                     {fret > 0 && <div className="string-line" />}
                     {synesthesia ? (
-                      <div
-                        className={['note-dot', 'synesthesia', synIndicator, isSelected ? 'user-selected' : ''].filter(Boolean).join(' ')}
-                        style={{ background: synColor, color: 'var(--color-bg)' }}
-                      >
-                        <span>{note.noteName}</span>
-                      </div>
+                      synVisible ? (
+                        <div
+                          className={['note-dot', 'synesthesia', synIndicator, isSelected ? 'user-selected' : ''].filter(Boolean).join(' ')}
+                          style={{ background: synColor, color: 'var(--color-bg)' }}
+                        >
+                          <span>{note.noteName}</span>
+                        </div>
+                      ) : (
+                        <div className="note-dot empty" />
+                      )
                     ) : role !== 'none' ? (
                       <div
                         className={`note-dot ${role}${isSelected ? ' user-selected' : ''}`}
