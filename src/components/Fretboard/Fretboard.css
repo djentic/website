@@ -153,6 +153,19 @@
   font-weight: 600;
 }
 
+.note-dot.synesthesia.syn-root {
+  border: 2px solid white;
+  box-shadow: 0 0 7px rgba(255, 255, 255, 0.55);
+}
+
+.note-dot.synesthesia.syn-chord {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.note-dot.synesthesia.syn-scale {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
 /* Fret position marker dots (bottom of neck) */
 .fret-dot-row {
   padding-top: 6px;

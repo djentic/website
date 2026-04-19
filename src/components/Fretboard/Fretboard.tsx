@@ -150,6 +150,12 @@ export const Fretboard: React.FC<FretboardProps> = ({
                 const fret = note.position.fret;
 
                 const synColor = synesthesia ? SYNESTHESIA_COLORS[note.pitchClass] : undefined;
+                const synIndicator = synesthesia
+                  ? role === 'root' ? 'syn-root'
+                  : role === 'chord-tone' ? 'syn-chord'
+                  : role === 'scale-degree' ? 'syn-scale'
+                  : ''
+                  : '';
 
                 return (
                   <div
@@ -166,7 +172,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
                     {fret > 0 && <div className="string-line" />}
                     {synesthesia ? (
                       <div
-                        className={`note-dot synesthesia${isSelected ? ' user-selected' : ''}`}
+                        className={['note-dot', 'synesthesia', synIndicator, isSelected ? 'user-selected' : ''].filter(Boolean).join(' ')}
                         style={{ background: synColor, color: 'var(--color-bg)' }}
                       >
                         <span>{note.noteName}</span>
