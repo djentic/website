@@ -54,7 +54,7 @@ export const App: React.FC = () => {
     <div className="app">
       <header className="app-header">
         <h1>Theory Visualiser</h1>
-        <Legend />
+        <Legend synesthesia={synesthesia} />
         <button
           className={`btn-dim small synesthesia-toggle${synesthesia ? ' active' : ''}`}
           onClick={() => setSynesthesia((v) => !v)}
