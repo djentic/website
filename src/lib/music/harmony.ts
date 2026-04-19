@@ -61,6 +61,16 @@ const FEEL_MAP: Record<string, string> = {
   'VII→i':  'modal resolution',
 };
 
+// Map extended/altered chord symbols to their diatonic triad base for key matching.
+// maj7/maj9/add9/6 → major; m7/m9/m6/madd9 → minor; dim7/m7b5 → dim; 7/9 → major (V context).
+function diatonicBaseSymbol(symbol: string): string {
+  if (['maj7', 'maj9', '6', 'add9'].includes(symbol)) return '';
+  if (['m7', 'm9', 'm6', 'madd9', 'mM7'].includes(symbol)) return 'm';
+  if (['dim7', 'm7b5'].includes(symbol)) return 'dim';
+  if (['7', '9', '7sus4'].includes(symbol)) return '';
+  return symbol;
+}
+
 function getFeel(fromRoman: string, toRoman: string): string {
   const key = `${fromRoman}→${toRoman}`;
   return FEEL_MAP[key] ?? 'harmonic movement';
@@ -85,9 +95,10 @@ export function suggestProgressions(
     // Find which degree the current chord is in each key
     for (let keyRootPc = 0; keyRootPc < 12; keyRootPc++) {
       const key = keyBuilder(keyRootPc as PitchClass);
+      const baseSymbol = diatonicBaseSymbol(currentChord.formula.symbol);
       const chordDegreeEntry = diatonicChords.find((d) => {
         const chordRoot = addSemitones(keyRootPc as PitchClass, d.degree);
-        return chordRoot === rootPc && d.formulaSymbol === currentChord.formula.symbol;
+        return chordRoot === rootPc && d.formulaSymbol === baseSymbol;
       });
 
       if (!chordDegreeEntry) continue;
