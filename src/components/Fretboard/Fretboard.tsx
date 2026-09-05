@@ -16,6 +16,7 @@ interface FretboardProps {
   activeScalePosition: ScalePosition | null;
   rootPc: PitchClass | null;
   synesthesia?: boolean;
+  leftHanded?: boolean;
   onToggle: (pos: FretPosition) => void;
 }
 
@@ -119,6 +120,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
   activeScalePosition,
   rootPc,
   synesthesia = false,
+  leftHanded = false,
   onToggle,
 }) => {
   const grid = generateFretboard(tuning, fretMax);
@@ -130,7 +132,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
 
   return (
     <div className="fretboard-wrapper">
-      <div className="fretboard">
+      <div className={`fretboard${leftHanded ? ' lefty' : ''}`}>
         {/* Fret number header */}
         <div className="fret-header">
           <div className="string-label-spacer" />

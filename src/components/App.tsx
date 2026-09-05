@@ -19,6 +19,7 @@ export const App: React.FC = () => {
   const state = useAppState();
   const [activeTab, setActiveTab] = useState<'tune' | 'chord' | 'key'>('tune');
   const [synesthesia, setSynesthesia] = useState(false);
+  const [leftHanded, setLeftHanded] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px) and (pointer: coarse)').matches;
   const [mobileWarningDismissed, setMobileWarningDismissed] = useState(false);
 
@@ -72,6 +73,13 @@ export const App: React.FC = () => {
         >
           Synesthesia
         </button>
+        <button
+          className={`btn-dim small synesthesia-toggle${leftHanded ? ' active' : ''}`}
+          onClick={() => setLeftHanded((v) => !v)}
+          title="Mirror the fretboard — nut on the right"
+        >
+          Left-handed
+        </button>
         {synesthesia && (
           <div className="synesthesia-key">
             {(Object.entries(SYNESTHESIA_COLORS) as [string, string][]).map(([pc, color]) => (
@@ -119,6 +127,7 @@ export const App: React.FC = () => {
               activeScalePosition={state.activeScalePosition}
               rootPc={rootPc}
               synesthesia={synesthesia}
+              leftHanded={leftHanded}
               onToggle={state.togglePosition}
             />
           </div>
@@ -151,6 +160,7 @@ export const App: React.FC = () => {
                 activeScalePosition={null}
                 rootPc={state.secondaryChord.rootPc}
                 synesthesia={synesthesia}
+                leftHanded={leftHanded}
                 onToggle={() => {}}
               />
             </div>

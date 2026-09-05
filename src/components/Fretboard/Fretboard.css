@@ -215,3 +215,36 @@
   opacity: 0.4;
   display: inline-block;
 }
+
+/* ===== Left-handed mode ===== */
+/* Mirror the neck horizontally: nut on the right, frets ascending right-to-left.
+   DOM order stays ascending — only the flex row direction and the four
+   side-specific properties below are flipped. */
+
+.fretboard.lefty .fret-header,
+.fretboard.lefty .string-row,
+.fretboard.lefty .fret-dot-row {
+  flex-direction: row-reverse;
+}
+
+.fretboard.lefty .string-label,
+.fretboard.lefty .string-label-spacer {
+  text-align: left;
+  padding-right: 0;
+  padding-left: 8px;
+}
+
+.fretboard.lefty .fret-cell.nut {
+  border-right: none;
+  border-left: 4px solid var(--color-nut);
+}
+
+.fretboard.lefty .fret-cell:not(.nut)::after {
+  right: auto;
+  left: 0;
+}
+
+.fretboard.lefty .fret-cell.capo-bar::before {
+  left: auto;
+  right: -3px;
+}
